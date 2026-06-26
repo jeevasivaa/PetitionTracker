@@ -1,0 +1,2716 @@
+<!DOCTYPE html>
+<html id="portal_html" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <title>File a Grievance - AI POWERED GRIEVANCE PROCESSING PORTAL</title>
+
+    <!-- Local CSS files -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link
+      id="customStyleSheet"
+      href="css/stylesheet.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    
+    <!-- Leaflet CSS for interactive maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <style>
+      /* File Grievance with green theme */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+        background: linear-gradient(
+          135deg,
+          #e8f5e8 0%,
+          #d4edda 25%,
+          #c3e6cb 50%,
+          #b1dfbb 75%,
+          #a3d9a5 100%
+        );
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        min-height: 100vh;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(39, 174, 96, 0.03) 0%,
+          rgba(46, 204, 113, 0.02) 30%,
+          transparent 60%
+        );
+        animation: subtleGlow 15s ease-in-out infinite;
+        pointer-events: none;
+        z-index: -10;
+      }
+
+      @keyframes subtleGlow {
+        0%,
+        100% {
+          transform: translate(-50%, -50%);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(-50%, -50%);
+          opacity: 0.8;
+        }
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      #container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        padding: 20px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+
+      .header h2 {
+        color: white;
+        margin: 0;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Navigation styles */
+      .top-nav {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .content {
+        flex: 1;
+        padding: 40px 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .file-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px;
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 1s ease-out 0.3s both;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .file-title {
+        color: #27ae60;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(
+          135deg,
+          #27ae60 0%,
+          #16a085 50%,
+          #27ae60 100%
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .file-form {
+        margin-top: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px;
+      }
+
+      .form-col {
+        flex: 1;
+        padding: 0 10px;
+        min-width: 250px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #27ae60;
+        font-size: 1rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        box-sizing: border-box;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        min-height: 120px;
+        resize: vertical;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        box-sizing: border-box;
+        font-family: inherit;
+      }
+
+      .form-textarea:focus {
+        outline: none;
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .form-submit {
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+      }
+
+      .form-submit:hover {
+        background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+      }
+
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        color: #27ae60;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .back-link:hover {
+        color: #229954;
+        background: rgba(39, 174, 96, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .footer {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        margin-top: auto;
+      }
+
+      .footer p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      @media (max-width: 768px) {
+        .file-container {
+          margin: 20px;
+          padding: 30px 20px;
+        }
+
+        .file-title {
+          font-size: 1.5rem;
+        }
+
+        .form-row {
+          flex-direction: column;
+        }
+
+        .form-col {
+          min-width: auto;
+          padding: 0;
+          margin-bottom: 20px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+          padding: 12px;
+        }
+
+        .form-submit {
+          padding: 12px 24px;
+        }
+      }
+
+      /* AI Features Styles */
+      .ai-features-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px 0;
+      }
+
+      .ai-section-title {
+        color: #2c3e50;
+        font-size: 1.3rem;
+        margin: 0 0 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .ai-section-description {
+        color: #6c757d;
+        margin: 0 0 25px 0;
+        font-size: 0.95rem;
+      }
+
+      .ai-feature-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .ai-feature-header h4 {
+        color: #495057;
+        font-size: 1.1rem;
+        margin: 0 0 8px 0;
+      }
+
+      .ai-feature-header p {
+        color: #6c757d;
+        margin: 0 0 15px 0;
+        font-size: 0.9rem;
+      }
+
+      .ai-feature-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .ai-file-input {
+        display: none;
+      }
+
+      .ai-upload-btn, .ai-record-btn, .ai-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border: 2px solid #007bff;
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 0.9rem;
+        max-width: fit-content;
+      }
+
+      .ai-upload-btn:hover, .ai-record-btn:hover, .ai-action-btn:hover {
+        background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+      }
+
+      .ai-record-btn {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border-color: #dc3545;
+      }
+
+      .ai-record-btn:hover {
+        background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+      }
+
+      .ai-action-btn {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        border-color: #28a745;
+      }
+
+      .ai-action-btn:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+      }
+
+      .audio-controls {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      /* Voice Input Styles */
+      .voice-input-icon {
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        margin-left: 8px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+
+      .voice-input-icon:hover {
+        background: rgba(46, 125, 50, 0.1);
+        transform: scale(1.1);
+      }
+
+      .voice-input-icon.listening {
+        background: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+        animation: voicePulse 1.5s infinite;
+      }
+
+      @keyframes voicePulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      .voice-status {
+        font-size: 0.85em;
+        margin: 4px 0;
+        padding: 0;
+      }
+
+      .voice-status.listening {
+        color: #f44336;
+      }
+
+      .voice-status.success {
+        color: #4caf50;
+      }
+
+      .voice-transcript {
+        background: rgba(46, 125, 50, 0.1);
+        padding: 8px;
+        border-radius: 6px;
+        margin-top: 5px;
+        font-size: 0.9em;
+        min-height: 0;
+        display: none;
+      }
+
+      .voice-transcript:not(:empty) {
+        display: block;
+      }
+
+      /* Photo Analysis Styles */
+      .ai-hint {
+        font-size: 0.85em;
+        color: #4caf50;
+        font-weight: normal;
+        margin-left: 8px;
+      }
+
+      .photo-preview {
+        margin-top: 10px;
+        padding: 15px;
+        border: 2px dashed #e0e0e0;
+        border-radius: 8px;
+        text-align: center;
+        background: rgba(76, 175, 80, 0.05);
+      }
+
+      .photo-preview img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+      }
+
+      .analysis-status {
+        color: #4caf50;
+        font-weight: 500;
+        padding: 8px;
+        text-align: center;
+        border-radius: 6px;
+        background: rgba(76, 175, 80, 0.1);
+        margin-top: 8px;
+      }
+
+      .analysis-status.analyzing {
+        color: #ff9800;
+        background: rgba(255, 152, 0, 0.1);
+      }
+
+      .analysis-status.complete {
+        color: #4caf50;
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .analysis-status.error {
+        color: #f44336;
+        background: rgba(244, 67, 54, 0.1);
+      }
+
+      .ai-suggestions {
+        margin-top: 15px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(46, 125, 50, 0.05) 100%);
+        border-radius: 12px;
+        border: 1px solid rgba(76, 175, 80, 0.2);
+      }
+
+      .ai-suggestions h4 {
+        margin: 0 0 15px 0;
+        color: #2e7d32;
+        font-size: 1.1em;
+      }
+
+      .suggestion-field {
+        margin-bottom: 15px;
+        padding: 12px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .suggestion-field label {
+        font-weight: 600;
+        color: #2e7d32;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .suggestion-content {
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        line-height: 1.5;
+        font-size: 0.95em;
+      }
+
+      .use-suggestion-btn {
+        background: #2196f3;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85em;
+        transition: background 0.3s ease;
+      }
+
+      .use-suggestion-btn:hover {
+        background: #1976d2;
+      }
+
+      .suggestion-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(76, 175, 80, 0.2);
+      }
+
+      .use-all-btn {
+        background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .use-all-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+      }
+
+      .clear-suggestions-btn {
+        background: #f44336;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .clear-suggestions-btn:hover {
+        background: #d32f2f;
+        transform: translateY(-2px);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Loading animation */
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .recording-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #dc3545;
+        font-weight: 500;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      .ai-preview {
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        color: #6c757d;
+      }
+
+      .ai-preview img {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .ai-preview audio {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .ai-results {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+        border: 2px solid #c3e6cb;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .ai-results h4 {
+        color: #155724;
+        margin: 0 0 15px 0;
+        font-size: 1.1rem;
+      }
+
+      .ai-result-field {
+        margin-bottom: 15px;
+      }
+
+      .ai-result-field label {
+        display: block;
+        font-weight: 600;
+        color: #155724;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+      }
+
+      .ai-result-content {
+        background: white;
+        border: 1px solid #c3e6cb;
+        border-radius: 6px;
+        padding: 12px;
+        color: #495057;
+        line-height: 1.5;
+        min-height: 40px;
+      }
+
+      .ai-result-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      .ai-use-btn, .ai-edit-btn, .ai-clear-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+      }
+
+      .ai-use-btn {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: white;
+      }
+
+      .ai-edit-btn {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #212529;
+      }
+
+      .ai-clear-btn {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+      }
+
+      .ai-use-btn:hover, .ai-edit-btn:hover, .ai-clear-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* Camera Interface Styles */
+      .camera-interface {
+        margin-top: 15px;
+        border: 2px solid #007bff;
+        border-radius: 12px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 86, 179, 0.05) 100%);
+      }
+
+      .camera-preview {
+        text-align: center;
+      }
+
+      .camera-preview video {
+        width: 100%;
+        max-width: 400px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #dee2e6;
+        background: #f8f9fa;
+      }
+
+      .camera-controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+
+      .location-status {
+        margin-top: 10px;
+        padding: 8px;
+        background: rgba(76, 175, 80, 0.1);
+        border-radius: 6px;
+        color: #2e7d32;
+        font-size: 0.9em;
+        text-align: center;
+      }
+
+      .location-status.error {
+        background: rgba(244, 67, 54, 0.1);
+        color: #c62828;
+      }
+
+      .location-status.success {
+        background: rgba(76, 175, 80, 0.1);
+        color: #2e7d32;
+      }
+
+      /* Map Interface Styles */
+      .map-interface {
+        margin-top: 15px;
+        border: 2px solid #4caf50;
+        border-radius: 12px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(46, 125, 50, 0.05) 100%);
+      }
+
+      .map-container {
+        text-align: center;
+      }
+
+      .map-controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+
+      .map-view {
+        width: 100%;
+        height: 350px;
+        border-radius: 8px;
+        border: 2px solid #dee2e6;
+        margin-top: 10px;
+      }
+
+      .location-summary {
+        margin-top: 15px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .location-source {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 500;
+        margin-left: 8px;
+      }
+
+      .location-source.camera {
+        background: rgba(33, 150, 243, 0.1);
+        color: #1976d2;
+      }
+
+      /* Camera Location Map Styles */
+      .camera-location-map {
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(33, 150, 243, 0.05);
+        border: 1px solid rgba(33, 150, 243, 0.2);
+        border-radius: 8px;
+      }
+
+      .camera-map-view {
+        width: 100%;
+        height: 200px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        margin: 10px 0;
+      }
+
+      .camera-location-info {
+        text-align: center;
+        font-size: 0.9em;
+        color: #666;
+        margin-top: 10px;
+      }
+
+      .camera-location-info .location-accuracy {
+        margin-top: 5px;
+        font-size: 0.85em;
+        color: #888;
+      }
+
+      .location-source.map {
+        background: rgba(76, 175, 80, 0.1);
+        color: #2e7d32;
+      }
+
+      .location-source.none {
+        background: rgba(158, 158, 158, 0.1);
+        color: #757575;
+      }
+
+      .location-source.auto {
+        background: rgba(255, 152, 0, 0.1);
+        color: #f57c00;
+        animation: autoLocationPulse 2s infinite;
+      }
+
+      @keyframes autoLocationPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      .current-location-btn {
+        background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .current-location-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .ai-features-section {
+          padding: 20px 15px;
+        }
+        
+        .ai-feature-card {
+          padding: 15px;
+        }
+        
+        .audio-controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .ai-result-actions {
+          flex-direction: column;
+        }
+        
+        .ai-upload-btn, .ai-record-btn, .ai-action-btn {
+          justify-content: center;
+          width: 100%;
+        }
+      }
+    </style>
+
+    <!-- Local JavaScript -->
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script>
+      // Check if user is logged in
+      document.addEventListener("DOMContentLoaded", function () {
+        const userString = sessionStorage.getItem("user");
+        if (!userString) {
+          showNotification(
+            "Please log in to file a grievance",
+            "warning",
+            3000
+          );
+          setTimeout(() => {
+            window.location.href =
+              "login_new.html?redirect=file_grievance.html";
+          }, 1500);
+          return;
+        }
+
+        try {
+          const user = JSON.parse(userString);
+          if (user.role !== "user") {
+            showNotification(
+              "Please use a user account to file grievances",
+              "warning",
+              3000
+            );
+            setTimeout(() => {
+              window.location.href =
+                "login_new.html?redirect=file_grievance.html";
+            }, 1500);
+          }
+        } catch (error) {
+          // Invalid session data
+          sessionStorage.removeItem("user");
+          window.location.href = "login_new.html?redirect=file_grievance.html";
+        }
+      });
+
+      async function fileGrievance(event) {
+        event.preventDefault();
+
+        // Simple validation
+        const name = document.getElementById("full-name").value;
+        const phone = document.getElementById("phone").value;
+        const district = document.getElementById("district").value;
+        const address = document.getElementById("address").value;
+        const subject = document.getElementById("subject").value;
+        const description = document.getElementById("description").value;
+        const email = document.getElementById("email")?.value || "";
+        const attachment = document.getElementById("attachment")?.files[0];
+
+        if (
+          !name ||
+          !phone ||
+          !district ||
+          !address ||
+          !subject ||
+          !description
+        ) {
+          showNotification("Please fill in all required fields", "error");
+          return;
+        }
+
+        // Phone validation
+        if (phone.length !== 10 || isNaN(phone)) {
+          showNotification(
+            "Please enter a valid 10-digit phone number",
+            "error"
+          );
+          return;
+        }
+
+        // Show submission notification
+        showNotification(
+          "Processing your grievance submission...",
+          "info",
+          3000
+        );
+
+        // Create grievance data object
+        const grievanceData = {
+          name,
+          phone,
+          district,
+          address,
+          subject,
+          description,
+          email,
+          attachment,
+        };
+
+        // Add location data if available (from camera capture or map selection)
+        let activeLocation = getActiveLocation();
+        
+        // If no location is available, try to get it one more time before submission
+        if (!activeLocation) {
+          console.log('No location available, attempting to capture during submission...');
+          showNotification('Attempting to capture location for your grievance...', 'info');
+          try {
+            activeLocation = await new Promise((resolve, reject) => {
+              if (!navigator.geolocation) {
+                console.log('Geolocation not supported');
+                resolve(null); // Skip if geolocation not supported
+                return;
+              }
+              
+              navigator.geolocation.getCurrentPosition(
+                function(position) {
+                  const locationData = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    timestamp: new Date().toISOString(),
+                    capture_method: 'submission_capture',
+                    coordinates_string: `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+                  };
+                  console.log('Location captured during submission:', locationData);
+                  resolve(locationData);
+                },
+                function(error) {
+                  console.log('Location capture failed during submission:', error);
+                  resolve(null); // Continue without location
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
+              );
+            });
+          } catch (error) {
+            console.log('Error during location capture:', error);
+          }
+        }
+        
+        if (activeLocation) {
+          grievanceData.latitude = activeLocation.latitude.toString();
+          grievanceData.longitude = activeLocation.longitude.toString();
+          grievanceData.location_accuracy = activeLocation.accuracy ? activeLocation.accuracy.toString() : null;
+          grievanceData.location_timestamp = activeLocation.timestamp;
+          grievanceData.location_capture_method = activeLocation.capture_method || 'unknown';
+          console.log('Including location data in submission:', activeLocation.coordinates_string, 'Method:', activeLocation.capture_method);
+        } else {
+          console.log('No location data available for submission');
+        }
+
+        try {
+          // First classify the petition
+          const classifyResult = await ApiClient.classifyPetition(
+            `${subject} ${description}`
+          );
+
+          if (classifyResult.error) {
+            showNotification(
+              "Could not classify petition. Using public department.",
+              "warning"
+            );
+            grievanceData.category = "Public Department";
+          } else {
+            grievanceData.category = classifyResult.category;
+            showNotification(
+              `Your grievance has been classified to: ${classifyResult.category}`,
+              "success",
+              3000
+            );
+          }
+
+          // Now submit the petition with the assigned category
+          const result = await ApiClient.submitPetition(grievanceData);
+
+          if (result.error) {
+            showNotification(result.error, "error");
+            return;
+          }
+
+          // Check for similarity detection results
+          if (result.similarity_detected && result.similar_grievances) {
+            const similarCount = result.similar_grievances_count || 0;
+            if (similarCount > 0) {
+              showNotification(
+                `⚠️ Notice: Found ${similarCount} similar grievance(s). Your case may be related to existing complaints.`,
+                "warning",
+                6000
+              );
+
+              // Show details of similar grievances
+              const similarDetails = result.similar_grievances
+                .slice(0, 3) // Show max 3 similar cases
+                .map((g) => `• ${g.grievance_id}: ${g.subject}`)
+                .join("\n");
+
+              console.log("Similar grievances found:");
+              console.log(similarDetails);
+
+              // Optional: Show a more detailed popup
+              setTimeout(() => {
+                if (
+                  confirm(
+                    `Similar grievances detected:\n\n${similarDetails}\n\nWould you like to continue with your submission?`
+                  )
+                ) {
+                  // User confirmed to continue
+                  proceedToSuccess(result);
+                } else {
+                  // User wants to review
+                  showNotification(
+                    "Submission cancelled. You can review similar cases and resubmit if needed.",
+                    "info"
+                  );
+                  return;
+                }
+              }, 1000);
+              return;
+            }
+          }
+
+          // Proceed to success page
+          proceedToSuccess(result);
+        } catch (error) {
+          console.error("Grievance submission error:", error);
+          showNotification(
+            "An error occurred while submitting your grievance. Please try again.",
+            "error"
+          );
+        }
+      }
+
+      // Helper function to proceed to success page
+      function proceedToSuccess(result) {
+        // Use the tracking_id from the API response, fallback to generated ID if not available
+        const grievanceId = result.tracking_id || generateGrievanceId();
+
+        // Add similarity info to URL if detected
+        const urlParams = new URLSearchParams({
+          id: grievanceId,
+          department: result.department || "General",
+        });
+
+        if (result.similarity_detected) {
+          urlParams.set("similarity", "true");
+          urlParams.set("similar_count", result.similar_grievances_count || 0);
+        }
+
+        window.location.href = `file_success.html?${urlParams.toString()}`;
+      }
+
+      // ===== AI-POWERED FEATURES =====
+
+      // Global variables for AI features
+      let currentPhotoFile = null;
+      let currentAudioBlob = null;
+      let mediaRecorder = null;
+      let recordingTimer = null;
+      let recordingStartTime = null;
+      let aiGeneratedContent = null;
+
+      // Photo Upload Handler
+      function handlePhotoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          showNotification('Please select a valid image file', 'error');
+          return;
+        }
+
+        // Validate file size (10MB limit)
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+          showNotification('Image file too large. Maximum size is 10MB', 'error');
+          return;
+        }
+
+        currentPhotoFile = file;
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('photo-preview');
+          preview.innerHTML = `
+            <img src="${e.target.result}" alt="Uploaded photo">
+            <p>📸 ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)</p>
+          `;
+          preview.classList.remove('hidden');
+          document.getElementById('analyze-photo-btn').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Analyze Photo with AI
+      async function analyzePhoto() {
+        if (!currentPhotoFile) {
+          showNotification('Please select a photo first', 'error');
+          return;
+        }
+
+        const button = document.getElementById('analyze-photo-btn');
+        const spinner = button.querySelector('.loading-spinner');
+        
+        // Show loading state
+        button.disabled = true;
+        spinner.classList.remove('hidden');
+        button.innerHTML = '<span class="loading-spinner"></span> Analyzing...';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', currentPhotoFile);
+
+          const response = await fetch('/analyze_image', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            aiGeneratedContent = {
+              type: 'image',
+              subject: result.data.generated_subject,
+              description: result.data.generated_description,
+              confidence: result.data.confidence
+            };
+
+            displayAIResults(aiGeneratedContent);
+            showNotification(`Photo analyzed successfully! Confidence: ${(result.data.confidence * 100).toFixed(0)}%`, 'success');
+          } else {
+            throw new Error(result.message || 'Photo analysis failed');
+          }
+        } catch (error) {
+          console.error('Photo analysis error:', error);
+          showNotification('Failed to analyze photo. Please try again.', 'error');
+        } finally {
+          // Reset button state
+          button.disabled = false;
+          spinner.classList.add('hidden');
+          button.innerHTML = 'Analyze Photo';
+        }
+      }
+
+      // Audio Recording Functions
+      async function startRecording() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          
+          mediaRecorder = new MediaRecorder(stream);
+          const audioChunks = [];
+
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+            currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            showAudioPreview();
+            stream.getTracks().forEach(track => track.stop());
+          };
+
+          mediaRecorder.start();
+          recordingStartTime = Date.now();
+
+          // Update UI
+          document.getElementById('start-recording-btn').classList.add('hidden');
+          document.getElementById('stop-recording-btn').classList.remove('hidden');
+          document.getElementById('recording-status').classList.remove('hidden');
+
+          // Start timer
+          recordingTimer = setInterval(updateRecordingTimer, 1000);
+
+          showNotification('Recording started. Speak clearly about your grievance.', 'info');
+        } catch (error) {
+          console.error('Error starting recording:', error);
+          showNotification('Failed to start recording. Please check microphone permissions.', 'error');
+        }
+      }
+
+      function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          clearInterval(recordingTimer);
+
+          // Update UI
+          document.getElementById('start-recording-btn').classList.remove('hidden');
+          document.getElementById('stop-recording-btn').classList.add('hidden');
+          document.getElementById('recording-status').classList.add('hidden');
+
+          showNotification('Recording stopped. You can now convert it to text.', 'success');
+        }
+      }
+
+      function updateRecordingTimer() {
+        if (recordingStartTime) {
+          const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+          const minutes = Math.floor(elapsed / 60);
+          const seconds = elapsed % 60;
+          document.getElementById('recording-timer').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+      }
+
+      function showAudioPreview() {
+        const preview = document.getElementById('audio-preview');
+        const audioUrl = URL.createObjectURL(currentAudioBlob);
+        
+        preview.innerHTML = `
+          <audio controls>
+            <source src="${audioUrl}" type="audio/wav">
+            Your browser does not support audio playback.
+          </audio>
+          <p>🎤 Audio recorded (${(currentAudioBlob.size / 1024).toFixed(1)} KB)</p>
+        `;
+        preview.classList.remove('hidden');
+        document.getElementById('transcribe-audio-btn').classList.remove('hidden');
+      }
+
+      // Transcribe Audio with AI
+      async function transcribeAudio() {
+        if (!currentAudioBlob) {
+          showNotification('Please record audio first', 'error');
+          return;
+        }
+
+        const button = document.getElementById('transcribe-audio-btn');
+        const spinner = button.querySelector('.loading-spinner');
+        
+        // Show loading state
+        button.disabled = true;
+        spinner.classList.remove('hidden');
+        button.innerHTML = '<span class="loading-spinner"></span> Converting...';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', currentAudioBlob, 'recording.wav');
+
+          const response = await fetch('/transcribe_audio', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            aiGeneratedContent = {
+              type: 'audio',
+              subject: result.data.enhanced_subject,
+              description: result.data.enhanced_description,
+              confidence: result.data.confidence,
+              originalTranscript: result.data.transcribed_text
+            };
+
+            displayAIResults(aiGeneratedContent);
+            showNotification(`Audio converted successfully! Confidence: ${(result.data.confidence * 100).toFixed(0)}%`, 'success');
+          } else {
+            throw new Error(result.message || 'Audio transcription failed');
+          }
+        } catch (error) {
+          console.error('Audio transcription error:', error);
+          showNotification('Failed to transcribe audio. Please try again.', 'error');
+        } finally {
+          // Reset button state
+          button.disabled = false;
+          spinner.classList.add('hidden');
+          button.innerHTML = 'Convert to Text';
+        }
+      }
+
+      // Display AI Results
+      function displayAIResults(content) {
+        const resultsDiv = document.getElementById('ai-results');
+        const subjectDiv = document.getElementById('ai-subject').querySelector('.ai-result-content');
+        const descriptionDiv = document.getElementById('ai-description').querySelector('.ai-result-content');
+
+        subjectDiv.textContent = content.subject;
+        descriptionDiv.textContent = content.description;
+
+        resultsDiv.classList.remove('hidden');
+      }
+
+      // Use AI Content
+      function useAIContent() {
+        if (!aiGeneratedContent) return;
+
+        document.getElementById('subject').value = aiGeneratedContent.subject;
+        document.getElementById('description').value = aiGeneratedContent.description;
+
+        showNotification('AI content applied to form fields', 'success');
+        clearAIContent();
+      }
+
+      // Edit AI Content
+      function editAIContent() {
+        if (!aiGeneratedContent) return;
+
+        // Pre-fill form fields and let user edit
+        document.getElementById('subject').value = aiGeneratedContent.subject;
+        document.getElementById('description').value = aiGeneratedContent.description;
+
+        // Scroll to form fields
+        document.getElementById('subject').focus();
+        document.getElementById('subject').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        showNotification('AI content added to form. You can now edit it as needed.', 'info');
+        clearAIContent();
+      }
+
+      // Clear AI Content
+      function clearAIContent() {
+        aiGeneratedContent = null;
+        document.getElementById('ai-results').classList.add('hidden');
+        
+        // Reset photo upload
+        currentPhotoFile = null;
+        document.getElementById('photo-upload').value = '';
+        document.getElementById('photo-preview').classList.add('hidden');
+        document.getElementById('analyze-photo-btn').classList.add('hidden');
+
+        // Reset audio recording
+        currentAudioBlob = null;
+        document.getElementById('audio-preview').classList.add('hidden');
+        document.getElementById('transcribe-audio-btn').classList.add('hidden');
+        
+        // Stop any ongoing recording
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          stopRecording();
+        }
+      }
+
+      // Enhanced notification function for AI features
+      function showAINotification(message, type, duration = 4000) {
+        showNotification(message, type, duration);
+      }
+
+      // Check AI service status on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        // Existing user check code...
+        
+        // Check AI services
+        fetch('/ai_status')
+          .then(response => response.json())
+          .then(result => {
+            if (!result.success || result.ai_services.status !== 'operational') {
+              console.warn('AI services not fully operational:', result);
+              showNotification('AI features may be limited due to configuration', 'warning', 3000);
+            }
+          })
+          .catch(error => {
+            console.error('Failed to check AI status:', error);
+          });
+
+        // Initialize voice input functionality
+        initializeVoiceInput();
+        
+        // Initialize location display
+        updateLocationDisplay();
+        
+        // Automatically capture location when page loads - ALWAYS
+        console.log('Auto-capturing location on page load...');
+        showNotification('📍 Automatically capturing your location for grievance submission...', 'info', 2000);
+        
+        // Immediate capture attempt
+        autoCaptureLocation();
+        
+        // Backup capture after 3 seconds in case first attempt fails
+        setTimeout(() => {
+          if (!currentLocation) {
+            console.log('Retrying location capture...');
+            autoCaptureLocation();
+          }
+        }, 3000);
+        
+        // Final backup after 8 seconds
+        setTimeout(() => {
+          if (!currentLocation) {
+            console.log('Final location capture attempt...');
+            autoCaptureLocation();
+          }
+        }, 8000);
+      });
+
+      // Voice Input Functionality
+      let recognition = null;
+      let isListening = false;
+
+      function initializeVoiceInput() {
+        const voiceBtn = document.getElementById('voiceInputBtn');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const voiceTranscript = document.getElementById('voiceTranscript');
+
+        if (!voiceBtn) return;
+
+        // Check if browser supports speech recognition
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+          voiceBtn.disabled = true;
+          voiceBtn.style.opacity = '0.5';
+          voiceBtn.title = 'Voice input not supported in this browser';
+          return;
+        }
+
+        // Initialize speech recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        let finalTranscript = '';
+
+        recognition.onstart = function() {
+          isListening = true;
+          voiceBtn.classList.add('listening');
+          voiceBtn.innerHTML = '🔴';
+          voiceStatus.innerHTML = 'Listening...';
+          voiceStatus.className = 'voice-status listening';
+        };
+
+        recognition.onresult = function(event) {
+          let interimTranscript = '';
+          
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+          
+          voiceTranscript.innerHTML = finalTranscript + '<span style="color: #999;">' + interimTranscript + '</span>';
+          
+          if (finalTranscript.trim()) {
+            voiceStatus.innerHTML = 'Speech detected. Click mic to stop.';
+            voiceStatus.className = 'voice-status success';
+          }
+        };
+
+        recognition.onerror = function(event) {
+          let errorMessage = 'Voice input error. Please try again.';
+          if (event.error === 'no-speech') {
+            errorMessage = 'No speech detected. Speak louder.';
+          } else if (event.error === 'not-allowed') {
+            errorMessage = 'Microphone access denied.';
+          }
+          
+          voiceStatus.innerHTML = errorMessage;
+          voiceStatus.style.color = '#dc3545';
+          stopVoiceInput();
+        };
+
+        recognition.onend = function() {
+          if (isListening) {
+            stopVoiceInput();
+          }
+        };
+
+        // Button click handler
+        voiceBtn.addEventListener('click', function() {
+          if (isListening) {
+            stopVoiceInput();
+          } else {
+            startVoiceInput();
+          }
+        });
+
+        function startVoiceInput() {
+          try {
+            finalTranscript = '';
+            voiceTranscript.innerHTML = '';
+            recognition.start();
+          } catch (error) {
+            voiceStatus.innerHTML = 'Failed to start voice input.';
+            voiceStatus.style.color = '#dc3545';
+          }
+        }
+
+        function stopVoiceInput() {
+          isListening = false;
+          voiceBtn.classList.remove('listening');
+          voiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve">
+            <g transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+              <path d="M 45 70.968 c -16.013 0 -29.042 -13.028 -29.042 -29.042 c 0 -1.712 1.388 -3.099 3.099 -3.099 c 1.712 0 3.099 1.388 3.099 3.099 C 22.157 54.522 32.404 64.77 45 64.77 c 12.595 0 22.843 -10.248 22.843 -22.843 c 0 -1.712 1.387 -3.099 3.099 -3.099 s 3.099 1.388 3.099 3.099 C 74.042 57.94 61.013 70.968 45 70.968 z" fill="currentColor"/>
+              <path d="M 45 60.738 L 45 60.738 c -10.285 0 -18.7 -8.415 -18.7 -18.7 V 18.7 C 26.3 8.415 34.715 0 45 0 h 0 c 10.285 0 18.7 8.415 18.7 18.7 v 23.337 C 63.7 52.322 55.285 60.738 45 60.738 z" fill="currentColor"/>
+              <path d="M 45 89.213 c -1.712 0 -3.099 -1.387 -3.099 -3.099 V 68.655 c 0 -1.712 1.388 -3.099 3.099 -3.099 c 1.712 0 3.099 1.387 3.099 3.099 v 17.459 C 48.099 87.826 46.712 89.213 45 89.213 z" fill="currentColor"/>
+              <path d="M 55.451 90 H 34.549 c -1.712 0 -3.099 -1.387 -3.099 -3.099 s 1.388 -3.099 3.099 -3.099 h 20.901 c 1.712 0 3.099 1.387 3.099 3.099 S 57.163 90 55.451 90 z" fill="currentColor"/>
+            </g>
+          </svg>`;
+          
+          if (recognition) {
+            recognition.stop();
+          }
+          
+          // Add transcript to description field if we have content
+          if (finalTranscript.trim()) {
+            const descriptionField = document.getElementById('description');
+            const currentText = descriptionField.value;
+            const newText = currentText ? currentText + ' ' + finalTranscript.trim() : finalTranscript.trim();
+            descriptionField.value = newText;
+            
+            voiceStatus.innerHTML = 'Voice input added!';
+            voiceStatus.className = 'voice-status success';
+            
+            // Clear the transcript display after a moment
+            setTimeout(() => {
+              voiceTranscript.innerHTML = '';
+              voiceStatus.innerHTML = '';
+            }, 2000);
+          } else {
+            voiceStatus.innerHTML = '';
+          }
+        }
+      }
+
+      // Photo Analysis Functionality
+      function handleAttachmentUpload(event) {
+        const file = event.target.files[0];
+        const photoPreview = document.getElementById('photoPreview');
+        const previewImage = document.getElementById('previewImage');
+        const aiSuggestions = document.getElementById('aiSuggestions');
+        
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            photoPreview.classList.remove('hidden');
+            aiSuggestions.classList.add('hidden'); // Hide previous suggestions
+            
+            // Automatically analyze the photo
+            setTimeout(() => {
+              analyzePhoto();
+            }, 500); // Small delay to let the image load
+          };
+          reader.readAsDataURL(file);
+        } else {
+          photoPreview.classList.add('hidden');
+          aiSuggestions.classList.add('hidden');
+        }
+      }
+
+      async function analyzePhoto() {
+        const analysisStatus = document.getElementById('analysisStatus');
+        const analysisIcon = document.getElementById('analysisIcon');
+        const analysisText = document.getElementById('analysisText');
+        const attachment = document.getElementById('attachment').files[0];
+        
+        if (!attachment || !attachment.type.startsWith('image/')) {
+          return;
+        }
+
+        try {
+          // Update status to analyzing
+          analysisStatus.className = 'analysis-status analyzing';
+          analysisIcon.innerHTML = '⏳';
+          analysisText.innerHTML = 'Analyzing photo...';
+          
+          const formData = new FormData();
+          formData.append('image', attachment);
+          
+          const response = await fetch('/analyze_photo', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to analyze photo');
+          }
+          
+          const result = await response.json();
+          
+          // Update status to complete
+          analysisStatus.className = 'analysis-status complete';
+          analysisIcon.innerHTML = '✅';
+          analysisText.innerHTML = 'Analysis complete!';
+          
+          // Display suggestions
+          displaySuggestions(result);
+          
+          // Hide status after a moment
+          setTimeout(() => {
+            analysisStatus.style.display = 'none';
+          }, 2000);
+          
+        } catch (error) {
+          console.error('Photo analysis error:', error);
+          
+          // Update status to error
+          analysisStatus.className = 'analysis-status error';
+          analysisIcon.innerHTML = '❌';
+          analysisText.innerHTML = 'Analysis failed. Please try again.';
+          
+          // Hide error after a moment
+          setTimeout(() => {
+            analysisStatus.style.display = 'none';
+          }, 3000);
+        }
+      }
+
+      function displaySuggestions(result) {
+        const aiSuggestions = document.getElementById('aiSuggestions');
+        const suggestedSubject = document.getElementById('suggestedSubject').querySelector('.suggestion-content');
+        const suggestedDescription = document.getElementById('suggestedDescription').querySelector('.suggestion-content');
+        
+        suggestedSubject.innerHTML = result.suggested_subject || 'No subject suggestion available';
+        suggestedDescription.innerHTML = result.suggested_description || 'No description suggestion available';
+        
+        aiSuggestions.classList.remove('hidden');
+        
+        // Scroll to suggestions
+        aiSuggestions.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      function useSuggestion(type) {
+        const suggestionContent = document.getElementById(`suggested${type.charAt(0).toUpperCase() + type.slice(1)}`).querySelector('.suggestion-content');
+        const targetField = document.getElementById(type === 'subject' ? 'subject' : 'description');
+        
+        if (suggestionContent && targetField) {
+          if (type === 'description') {
+            // For description, append to existing content
+            const existingText = targetField.value;
+            const newText = existingText ? existingText + '\n\n' + suggestionContent.textContent : suggestionContent.textContent;
+            targetField.value = newText;
+          } else {
+            // For subject, replace content
+            targetField.value = suggestionContent.textContent;
+          }
+          
+          showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} suggestion added!`, 'success');
+        }
+      }
+
+      function useAllSuggestions() {
+        useSuggestion('subject');
+        useSuggestion('description');
+        showNotification('All AI suggestions have been added to your petition!', 'success');
+      }
+
+      function clearSuggestions() {
+        const aiSuggestions = document.getElementById('aiSuggestions');
+        aiSuggestions.classList.add('hidden');
+      }
+
+      // ===== CAMERA CAPTURE FUNCTIONALITY =====
+      
+      let cameraStream = null;
+      let currentLocation = null;
+      let capturedImageBlob = null;
+
+      // Auto-capture location function - always captures regardless of user interaction
+      async function autoCaptureLocation() {
+        if (!navigator.geolocation) {
+          console.log('Geolocation not supported by browser');
+          return;
+        }
+
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 15000, // Longer timeout for auto-capture
+          maximumAge: 600000 // 10 minutes cache
+        };
+
+        try {
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+              function(position) {
+                currentLocation = {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  accuracy: position.coords.accuracy,
+                  timestamp: new Date().toISOString(),
+                  capture_method: 'auto_capture',
+                  coordinates_string: `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+                };
+                
+                console.log('Auto-captured location successfully:', currentLocation);
+                updateLocationDisplay();
+                showNotification('✅ Location captured automatically', 'success', 2000);
+                resolve();
+              },
+              function(error) {
+                console.log('Auto-capture location error:', error);
+                // Don't show error notification for auto-capture failures
+                resolve(); // Continue without blocking
+              },
+              options
+            );
+          });
+        } catch (error) {
+          console.log('Error during auto-capture:', error);
+        }
+      }
+
+      // Toggle camera interface
+      async function toggleCamera() {
+        const cameraInterface = document.getElementById('cameraInterface');
+        const cameraBtn = document.getElementById('cameraBtn');
+        
+        if (cameraInterface.classList.contains('hidden')) {
+          // Open camera
+          try {
+            await startCamera();
+            cameraInterface.classList.remove('hidden');
+            cameraBtn.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="16px" height="16px" style="vertical-align: middle;">
+                <path d="M 14 4 C 8.486 4 4 8.486 4 14 L 4 36 C 4 41.514 8.486 46 14 46 L 36 46 C 41.514 46 46 41.514 46 36 L 46 14 C 46 8.486 41.514 4 36 4 L 14 4 z M 21.132812 13 L 28.867188 13 C 29.740188 13 30.560719 13.464891 31.011719 14.212891 L 32.845703 17.273438 C 33.114703 17.721438 33.608812 18 34.132812 18 L 39.5 18 C 40.327 18 41 18.673 41 19.5 L 41 35.5 C 41 36.327 40.327 37 39.5 37 L 10.5 37 C 9.673 37 9 36.327 9 35.5 L 9 19.5 C 9 18.673 9.673 18 10.5 18 L 15.867188 18 C 16.390187 18 16.885297 17.721484 17.154297 17.271484 L 18.988281 14.212891 C 19.438281 13.464891 20.259812 13 21.132812 13 z M 12 14 L 14 14 C 14.552 14 15 14.448 15 15 L 15 16 L 11 16 L 11 15 C 11 14.448 11.448 14 12 14 z M 34 19.5 A 1 1 0 0 0 34 21.5 A 1 1 0 0 0 34 19.5 z M 25 20 C 20.864 20 17.5 23.364 17.5 27.5 C 17.5 31.636 20.864 35 25 35 C 29.136 35 32.5 31.636 32.5 27.5 C 32.5 23.364 29.136 20 25 20 z M 25 22 C 28.032 22 30.5 24.468 30.5 27.5 C 30.5 30.532 28.032 33 25 33 C 21.968 33 19.5 30.532 19.5 27.5 C 19.5 24.468 21.968 22 25 22 z" fill="currentColor"/>
+              </svg>
+              Close Camera
+            `;
+            // Show map if location is available, otherwise show a placeholder
+            if (currentLocation) {
+              showCameraLocationMap();
+              updateCameraLocationMap(currentLocation);
+              console.log('Camera opened with existing location:', currentLocation);
+            } else {
+              showCameraLocationMap();
+              console.log('Camera opened - location will be used when available');
+            }
+          } catch (error) {
+            console.error('Error starting camera:', error);
+            showNotification('Failed to access camera. Please check permissions.', 'error');
+          }
+        } else {
+          // Close camera
+          closeCamera();
+        }
+      }
+
+      // Start camera stream
+      async function startCamera() {
+        try {
+          const constraints = {
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              facingMode: 'environment' // Use rear camera if available
+            }
+          };
+          
+          cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+          const video = document.getElementById('cameraVideo');
+          video.srcObject = cameraStream;
+          
+          showNotification('Camera ready! Position your device to capture the evidence.', 'success');
+        } catch (error) {
+          console.error('Camera access error:', error);
+          throw new Error('Failed to access camera');
+        }
+      }
+
+      // Close camera
+      function closeCamera() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+        
+        const cameraInterface = document.getElementById('cameraInterface');
+        const cameraBtn = document.getElementById('cameraBtn');
+        const cameraLocationMap = document.getElementById('cameraLocationMap');
+        
+        cameraInterface.classList.add('hidden');
+        if (cameraLocationMap) {
+          cameraLocationMap.classList.add('hidden');
+        }
+        cameraBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="16px" height="16px" style="vertical-align: middle;">
+            <path d="M 14 4 C 8.486 4 4 8.486 4 14 L 4 36 C 4 41.514 8.486 46 14 46 L 36 46 C 41.514 46 46 41.514 46 36 L 46 14 C 46 8.486 41.514 4 36 4 L 14 4 z M 21.132812 13 L 28.867188 13 C 29.740188 13 30.560719 13.464891 31.011719 14.212891 L 32.845703 17.273438 C 33.114703 17.721438 33.608812 18 34.132812 18 L 39.5 18 C 40.327 18 41 18.673 41 19.5 L 41 35.5 C 41 36.327 40.327 37 39.5 37 L 10.5 37 C 9.673 37 9 36.327 9 35.5 L 9 19.5 C 9 18.673 9.673 18 10.5 18 L 15.867188 18 C 16.390187 18 16.885297 17.721484 17.154297 17.271484 L 18.988281 14.212891 C 19.438281 13.464891 20.259812 13 21.132812 13 z M 12 14 L 14 14 C 14.552 14 15 14.448 15 15 L 15 16 L 11 16 L 11 15 C 11 14.448 11.448 14 12 14 z M 34 19.5 A 1 1 0 0 0 34 21.5 A 1 1 0 0 0 34 19.5 z M 25 20 C 20.864 20 17.5 23.364 17.5 27.5 C 17.5 31.636 20.864 35 25 35 C 29.136 35 32.5 31.636 32.5 27.5 C 32.5 23.364 29.136 20 25 20 z M 25 22 C 28.032 22 30.5 24.468 30.5 27.5 C 30.5 30.532 28.032 33 25 33 C 21.968 33 19.5 30.532 19.5 27.5 C 19.5 24.468 21.968 22 25 22 z" fill="currentColor"/>
+          </svg>
+          📸 Capture Photo with Location
+        `;
+      }
+
+      // Get current location
+      async function getCurrentLocation() {
+        const locationStatus = document.getElementById('locationStatus');
+        
+        if (!navigator.geolocation) {
+          locationStatus.innerHTML = '❌ Location not supported by browser';
+          locationStatus.className = 'location-status error';
+          return;
+        }
+
+        locationStatus.innerHTML = '📍 Getting location...';
+        locationStatus.className = 'location-status';
+
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        };
+
+        try {
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+              function(position) {
+                currentLocation = {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  accuracy: position.coords.accuracy,
+                  timestamp: new Date().toISOString(),
+                  capture_method: 'camera_capture',
+                  coordinates_string: `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+                };
+                
+                locationStatus.innerHTML = `✅ Location: ${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)} (±${Math.round(currentLocation.accuracy)}m)`;
+                locationStatus.className = 'location-status success';
+                
+                // Update camera location map
+                updateCameraLocationMap(currentLocation);
+                
+                // Update overall location display
+                updateLocationDisplay();
+                
+                console.log('Camera location captured successfully:', currentLocation);
+                resolve();
+              },
+              function(error) {
+                let errorMessage = '❌ Location access denied';
+                switch(error.code) {
+                  case error.PERMISSION_DENIED:
+                    errorMessage = '❌ Location access denied. Please enable location services.';
+                    break;
+                  case error.POSITION_UNAVAILABLE:
+                    errorMessage = '❌ Location unavailable. Please try again.';
+                    break;
+                  case error.TIMEOUT:
+                    errorMessage = '❌ Location request timed out. Please try again.';
+                    break;
+                }
+                
+                locationStatus.innerHTML = errorMessage;
+                locationStatus.className = 'location-status error';
+                console.log('Location error:', error);
+                reject(error);
+              },
+              options
+            );
+          });
+        } catch (error) {
+          console.log('Error getting location:', error);
+        }
+      }
+
+      // Auto-capture location function - always captures regardless of user interaction
+      async function autoCaptureLocation() {
+        if (!navigator.geolocation) {
+          console.log('Geolocation not supported by browser');
+          return;
+        }
+
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 15000, // Longer timeout for auto-capture
+          maximumAge: 600000 // 10 minutes cache
+        };
+
+        try {
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+              function(position) {
+                currentLocation = {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  accuracy: position.coords.accuracy,
+                  timestamp: new Date().toISOString(),
+                  capture_method: 'auto_capture',
+                  coordinates_string: `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+                };
+                
+                console.log('Auto-captured location successfully:', currentLocation);
+                updateLocationDisplay();
+                showNotification('✅ Location captured automatically', 'success', 2000);
+                resolve();
+              },
+              function(error) {
+                console.log('Auto-capture location error:', error);
+                // Don't show error notification for auto-capture failures
+                resolve(); // Continue without blocking
+              },
+              options
+            );
+          });
+        } catch (error) {
+          console.log('Error during auto-capture:', error);
+        }
+      }
+
+      // Capture photo from camera
+      async function capturePhoto() {
+        const video = document.getElementById('cameraVideo');
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        
+        // Set canvas dimensions to match video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Draw video frame to canvas
+        context.drawImage(video, 0, 0);
+        
+        // Use existing location or capture if needed
+        if (currentLocation) {
+          // Update capture method to camera_capture for existing location
+          currentLocation.capture_method = 'camera_capture';
+          currentLocation.timestamp = new Date().toISOString();
+          updateLocationDisplay();
+          updateCameraLocationMap(currentLocation);
+          console.log('Using existing location for camera capture:', currentLocation);
+        } else {
+          // Fallback: try to capture location if auto-capture failed
+          showNotification('Capturing location with photo...', 'info');
+          try {
+            await new Promise((resolve, reject) => {
+              navigator.geolocation.getCurrentPosition(
+                function(position) {
+                  currentLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    timestamp: new Date().toISOString(),
+                    capture_method: 'camera_capture',
+                    coordinates_string: `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+                  };
+                  updateLocationDisplay();
+                  updateCameraLocationMap(currentLocation);
+                  console.log('Camera capture location updated:', currentLocation);
+                  resolve();
+                },
+                function(error) {
+                  console.log('Could not get location for camera capture:', error);
+                  resolve(); // Continue without location
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
+              );
+            });
+          } catch (error) {
+            console.log('Error during location capture:', error);
+          }
+        }
+        
+        // Convert canvas to blob
+        canvas.toBlob(function(blob) {
+          capturedImageBlob = blob;
+          
+          // Create a file from the blob
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+          const fileName = `captured_${timestamp}.jpg`;
+          const file = new File([blob], fileName, { type: 'image/jpeg' });
+          
+          // Create a mock event to use with existing handleAttachmentUpload function
+          const mockEvent = {
+            target: {
+              files: [file]
+            }
+          };
+          
+          // Update the file input (for form submission)
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          document.getElementById('attachment').files = dataTransfer.files;
+          
+          // Handle the attachment upload with location data
+          handleAttachmentUpload(mockEvent);
+          
+          // Close camera after capture
+          closeCamera();
+          
+          const locationMsg = currentLocation ? 
+            `Photo captured with location: ${currentLocation.coordinates_string}` : 
+            'Photo captured (location not available)';
+          showNotification(locationMsg, 'success');
+        }, 'image/jpeg', 0.8);
+      }
+
+      // ===== CAMERA LOCATION MAP FUNCTIONALITY =====
+      
+      let cameraMapInstance = null;
+      let cameraMapMarker = null;
+
+      // Show camera location map
+      function showCameraLocationMap() {
+        const cameraLocationMap = document.getElementById('cameraLocationMap');
+        if (cameraLocationMap) {
+          cameraLocationMap.classList.remove('hidden');
+        }
+      }
+
+      // Update camera location map with current location
+      function updateCameraLocationMap(location) {
+        if (!location || !location.latitude || !location.longitude) {
+          return;
+        }
+
+        // Update coordinate display
+        const coordinatesElement = document.getElementById('cameraCoordinates');
+        const accuracyElement = document.getElementById('cameraAccuracy');
+        
+        if (coordinatesElement) {
+          coordinatesElement.textContent = `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
+        }
+        
+        if (accuracyElement) {
+          accuracyElement.textContent = `Accuracy: ±${Math.round(location.accuracy || 0)} meters`;
+        }
+
+        // Show the map container
+        showCameraLocationMap();
+
+        // Initialize or update the map
+        const mapContainer = document.getElementById('cameraMapView');
+        if (mapContainer) {
+          // Clear existing map if any
+          if (cameraMapInstance) {
+            cameraMapInstance.remove();
+            cameraMapInstance = null;
+            cameraMapMarker = null;
+          }
+
+          // Create new map
+          setTimeout(() => {
+            try {
+              cameraMapInstance = L.map('cameraMapView').setView([location.latitude, location.longitude], 16);
+              
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+              }).addTo(cameraMapInstance);
+              
+              // Add marker for current location
+              cameraMapMarker = L.marker([location.latitude, location.longitude])
+                .addTo(cameraMapInstance)
+                .bindPopup(`📸 Camera Location<br>Coordinates: ${location.coordinates_string}<br>Accuracy: ±${Math.round(location.accuracy || 0)}m`)
+                .openPopup();
+              
+              console.log('Camera location map initialized');
+            } catch (error) {
+              console.error('Error initializing camera location map:', error);
+            }
+          }, 100);
+        }
+      }
+
+      // ===== REMOVED MAP INTERFACE FUNCTIONALITY =====
+      // Old manual map selection removed - now using camera-only workflow
+
+      // Removed toggleMapInterface function - no longer needed
+
+      // Initialize the Leaflet map
+      function initializeMap() {
+        try {
+          // Default center to Tamil Nadu, India
+          const defaultCenter = [11.1271, 78.6569];
+          
+          // Create map instance
+          mapInstance = L.map('mapView').setView(defaultCenter, 8);
+          
+          // Add OpenStreetMap tiles
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+          }).addTo(mapInstance);
+          
+          // Add click event to place marker
+          mapInstance.on('click', function(e) {
+            placeMapMarker(e.latlng.lat, e.latlng.lng);
+          });
+          
+          mapInitialized = true;
+          showNotification('Map loaded! Click anywhere to pin your location.', 'info');
+          
+          // Try to center on user's current location
+          getCurrentLocationForMap();
+          
+        } catch (error) {
+          console.error('Map initialization error:', error);
+          showNotification('Failed to load map. Please check your internet connection.', 'error');
+        }
+      }
+
+      // Place marker on map
+      function placeMapMarker(lat, lng) {
+        // Remove existing marker
+        if (mapMarker) {
+          mapInstance.removeLayer(mapMarker);
+        }
+        
+        // Create new marker
+        mapMarker = L.marker([lat, lng]).addTo(mapInstance);
+        
+        // Store location data
+        mapLocation = {
+          latitude: lat,
+          longitude: lng,
+          accuracy: null, // Not available for manual selection
+          timestamp: new Date().toISOString(),
+          coordinates_string: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          capture_method: "map_selection"
+        };
+        
+        // Update display
+        const mapCoordinates = document.getElementById('mapCoordinates');
+        const mapLocationSummary = document.getElementById('mapLocationSummary');
+        
+        mapCoordinates.textContent = mapLocation.coordinates_string;
+        mapLocationSummary.classList.remove('hidden');
+        
+        // Update overall location status
+        updateLocationDisplay();
+        
+        showNotification('Location pinned successfully!', 'success');
+      }
+
+      // Get current location for map
+      function getCurrentLocationForMap() {
+        const btn = document.getElementById('getCurrentLocationBtn');
+        
+        if (!navigator.geolocation) {
+          showNotification('Geolocation not supported by this browser.', 'error');
+          return;
+        }
+
+        // Show loading state
+        btn.innerHTML = '📍 Getting location...';
+        btn.disabled = true;
+
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        };
+
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            // Center map on user location
+            if (mapInstance) {
+              mapInstance.setView([lat, lng], 15);
+              placeMapMarker(lat, lng);
+            }
+            
+            // Reset button
+            btn.innerHTML = '📍 Use My Current Location';
+            btn.disabled = false;
+            
+            showNotification('Centered map on your current location!', 'success');
+          },
+          function(error) {
+            let errorMessage = 'Failed to get current location.';
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                errorMessage = 'Location access denied by user.';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMessage = 'Location information unavailable.';
+                break;
+              case error.TIMEOUT:
+                errorMessage = 'Location request timed out.';
+                break;
+            }
+            
+            showNotification(errorMessage, 'error');
+            
+            // Reset button
+            btn.innerHTML = '📍 Use My Current Location';
+            btn.disabled = false;
+          },
+          options
+        );
+      }
+
+      // Clear map location
+      function clearMapLocation() {
+        if (mapMarker && mapInstance) {
+          mapInstance.removeLayer(mapMarker);
+          mapMarker = null;
+        }
+        
+        mapLocation = null;
+        
+        const mapLocationSummary = document.getElementById('mapLocationSummary');
+        mapLocationSummary.classList.add('hidden');
+        
+        updateLocationDisplay();
+        
+        showNotification('Map location cleared.', 'info');
+      }
+
+      // Update the overall location display
+      function updateLocationDisplay() {
+        const locationStatusDisplay = document.getElementById('locationStatusDisplay');
+        const currentLocationDisplay = document.getElementById('currentLocationDisplay');
+        const locationSourceDisplay = document.getElementById('locationSourceDisplay');
+        const locationAccuracyDisplay = document.getElementById('locationAccuracyDisplay');
+        
+        // Show current location status
+        if (currentLocation && currentLocation.latitude) {
+          currentLocationDisplay.textContent = currentLocation.coordinates_string;
+          
+          // Show capture method
+          switch(currentLocation.capture_method) {
+            case 'auto_capture':
+              locationSourceDisplay.textContent = 'AUTO-CAPTURED';
+              locationSourceDisplay.className = 'location-source auto';
+              break;
+            case 'camera_capture':
+              locationSourceDisplay.textContent = 'CAMERA';
+              locationSourceDisplay.className = 'location-source camera';
+              break;
+            default:
+              locationSourceDisplay.textContent = 'CAPTURED';
+              locationSourceDisplay.className = 'location-source';
+          }
+          
+          if (currentLocation.accuracy) {
+            locationAccuracyDisplay.textContent = `Location captured with ±${Math.round(currentLocation.accuracy)}m accuracy`;
+          } else {
+            locationAccuracyDisplay.textContent = 'Location captured for accurate grievance routing';
+          }
+        } else {
+          currentLocationDisplay.textContent = 'Capturing location automatically...';
+          locationSourceDisplay.textContent = 'AUTO-CAPTURE';
+          locationSourceDisplay.className = 'location-source auto';
+          locationAccuracyDisplay.textContent = 'Location is being captured automatically to route your grievance to the correct local office';
+        }
+        
+        // Always show the location status display
+        locationStatusDisplay.classList.remove('hidden');
+      }
+
+      // Get the active location for form submission
+      function getActiveLocation() {
+        // Return camera capture location only
+        if (currentLocation && currentLocation.latitude) {
+          return currentLocation;
+        }
+        return null;
+      }
+    </script>
+  </head>
+  <body class="body">
+    <div id="container">
+      <header class="header">
+        <div class="container">
+          <h2>AI POWERED GRIEVANCE PROCESSING PORTAL</h2>
+          <nav class="top-nav">
+            <div class="nav-links">
+              <a href="index.html" class="nav-link">Home</a>
+              <a href="track_grievance.html" class="nav-link"
+                >Track Grievance</a
+              >
+              <a href="faq.html" class="nav-link">FAQ</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="container">
+          <div class="file-container">
+            <h2 class="file-title">File a New Grievance</h2>
+
+            <div class="file-instruction">
+              <p>
+                <strong>Instructions:</strong> Please fill in all the required
+                fields marked with an asterisk (*). Provide as much detail as
+                possible about your grievance to help us address it effectively.
+              </p>
+            </div>
+
+            <form class="file-form" onsubmit="fileGrievance(event)">
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="full-name" class="form-label">Full Name*</label>
+                    <input
+                      type="text"
+                      id="full-name"
+                      class="form-input"
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number*</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      class="form-input"
+                      placeholder="Enter your 10-digit phone number"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                      type="email"
+                      id="email"
+                      class="form-input"
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="district" class="form-label">District*</label>
+                    <select id="district" class="form-select" required>
+                      <option value="">Select your district</option>
+                      <option value="Ariyalur">Ariyalur</option>
+                      <option value="Chengalpattu">Chengalpattu</option>
+                      <option value="Chennai">Chennai</option>
+                      <option value="Coimbatore">Coimbatore</option>
+                      <option value="Cuddalore">Cuddalore</option>
+                      <option value="Dharmapuri">Dharmapuri</option>
+                      <option value="Dindigul">Dindigul</option>
+                      <option value="Erode">Erode</option>
+                      <option value="Kallakurichi">Kallakurichi</option>
+                      <option value="Kanchipuram">Kanchipuram</option>
+                      <option value="Kanniyakumari">Kanniyakumari</option>
+                      <option value="Karur">Karur</option>
+                      <option value="Krishnagiri">Krishnagiri</option>
+                      <option value="Madurai">Madurai</option>
+                      <option value="Mayiladuthurai">Mayiladuthurai</option>
+                      <option value="Nagapattinam">Nagapattinam</option>
+                      <option value="Namakkal">Namakkal</option>
+                      <option value="Nilgiris">Nilgiris</option>
+                      <option value="Perambalur">Perambalur</option>
+                      <option value="Pudukkottai">Pudukkottai</option>
+                      <option value="Ramanathapuram">Ramanathapuram</option>
+                      <option value="Ranipet">Ranipet</option>
+                      <option value="Salem">Salem</option>
+                      <option value="Sivagangai">Sivagangai</option>
+                      <option value="Tenkasi">Tenkasi</option>
+                      <option value="Thanjavur">Thanjavur</option>
+                      <option value="Theni">Theni</option>
+                      <option value="Thoothukudi">Thoothukudi</option>
+                      <option value="Tiruchirappalli">Tiruchirappalli</option>
+                      <option value="Tirunelveli">Tirunelveli</option>
+                      <option value="Tirupathur">Tirupathur</option>
+                      <option value="Tiruppur">Tiruppur</option>
+                      <option value="Tiruvallur">Tiruvallur</option>
+                      <option value="Tiruvannamalai">Tiruvannamalai</option>
+                      <option value="Tiruvarur">Tiruvarur</option>
+                      <option value="Vellore">Vellore</option>
+                      <option value="Viluppuram">Viluppuram</option>
+                      <option value="Virudhunagar">Virudhunagar</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address" class="form-label">Address*</label>
+                <textarea
+                  id="address"
+                  class="form-textarea"
+                  placeholder="Enter your complete address"
+                  required
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="subject" class="form-label">Subject*</label>
+                <input
+                  type="text"
+                  id="subject"
+                  class="form-input"
+                  placeholder="Brief subject of your grievance"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="form-label">
+                  Detailed Description*
+                  <button type="button" id="voiceInputBtn" class="voice-input-icon" title="Click to use voice input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve">
+                      <g transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                        <path d="M 45 70.968 c -16.013 0 -29.042 -13.028 -29.042 -29.042 c 0 -1.712 1.388 -3.099 3.099 -3.099 c 1.712 0 3.099 1.388 3.099 3.099 C 22.157 54.522 32.404 64.77 45 64.77 c 12.595 0 22.843 -10.248 22.843 -22.843 c 0 -1.712 1.387 -3.099 3.099 -3.099 s 3.099 1.388 3.099 3.099 C 74.042 57.94 61.013 70.968 45 70.968 z" fill="currentColor"/>
+                        <path d="M 45 60.738 L 45 60.738 c -10.285 0 -18.7 -8.415 -18.7 -18.7 V 18.7 C 26.3 8.415 34.715 0 45 0 h 0 c 10.285 0 18.7 8.415 18.7 18.7 v 23.337 C 63.7 52.322 55.285 60.738 45 60.738 z" fill="currentColor"/>
+                        <path d="M 45 89.213 c -1.712 0 -3.099 -1.387 -3.099 -3.099 V 68.655 c 0 -1.712 1.388 -3.099 3.099 -3.099 c 1.712 0 3.099 1.387 3.099 3.099 v 17.459 C 48.099 87.826 46.712 89.213 45 89.213 z" fill="currentColor"/>
+                        <path d="M 55.451 90 H 34.549 c -1.712 0 -3.099 -1.387 -3.099 -3.099 s 1.388 -3.099 3.099 -3.099 h 20.901 c 1.712 0 3.099 1.387 3.099 3.099 S 57.163 90 55.451 90 z" fill="currentColor"/>
+                      </g>
+                    </svg>
+                  </button>
+                </label>
+                <div id="voiceStatus" class="voice-status"></div>
+                <textarea
+                  id="description"
+                  class="form-textarea"
+                  placeholder="Please provide detailed information about your grievance"
+                  required
+                ></textarea>
+                <div id="voiceTranscript" class="voice-transcript"></div>
+              </div>
+
+
+              <div class="form-group">
+                <label for="attachment" class="form-label">
+                  Additional Attachment (if any)
+                  <span class="ai-hint">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="16px" height="16px" style="vertical-align: middle; margin-right: 4px;">
+                      <path d="M 14 4 C 8.486 4 4 8.486 4 14 L 4 36 C 4 41.514 8.486 46 14 46 L 36 46 C 41.514 46 46 41.514 46 36 L 46 14 C 46 8.486 41.514 4 36 4 L 14 4 z M 21.132812 13 L 28.867188 13 C 29.740188 13 30.560719 13.464891 31.011719 14.212891 L 32.845703 17.273438 C 33.114703 17.721438 33.608812 18 34.132812 18 L 39.5 18 C 40.327 18 41 18.673 41 19.5 L 41 35.5 C 41 36.327 40.327 37 39.5 37 L 10.5 37 C 9.673 37 9 36.327 9 35.5 L 9 19.5 C 9 18.673 9.673 18 10.5 18 L 15.867188 18 C 16.390187 18 16.885297 17.721484 17.154297 17.271484 L 18.988281 14.212891 C 19.438281 13.464891 20.259812 13 21.132812 13 z M 12 14 L 14 14 C 14.552 14 15 14.448 15 15 L 15 16 L 11 16 L 11 15 C 11 14.448 11.448 14 12 14 z M 34 19.5 A 1 1 0 0 0 34 21.5 A 1 1 0 0 0 34 19.5 z M 25 20 C 20.864 20 17.5 23.364 17.5 27.5 C 17.5 31.636 20.864 35 25 35 C 29.136 35 32.5 31.636 32.5 27.5 C 32.5 23.364 29.136 20 25 20 z M 25 22 C 28.032 22 30.5 24.468 30.5 27.5 C 30.5 30.532 28.032 33 25 33 C 21.968 33 19.5 30.532 19.5 27.5 C 19.5 24.468 21.968 22 25 22 z" fill="currentColor"/>
+                    </svg>
+                    Upload photos for AI-powered petition suggestions
+                  </span>
+                </label>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                  <input type="file" id="attachment" class="form-input" accept="image/*,application/pdf" onchange="handleAttachmentUpload(event)" style="flex: 1; min-width: 200px;" />
+                  <button type="button" id="cameraBtn" class="ai-upload-btn" onclick="toggleCamera()" style="white-space: nowrap;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="16px" height="16px" style="vertical-align: middle;">
+                      <path d="M 14 4 C 8.486 4 4 8.486 4 14 L 4 36 C 4 41.514 8.486 46 14 46 L 36 46 C 41.514 46 46 41.514 46 36 L 46 14 C 46 8.486 41.514 4 36 4 L 14 4 z M 21.132812 13 L 28.867188 13 C 29.740188 13 30.560719 13.464891 31.011719 14.212891 L 32.845703 17.273438 C 33.114703 17.721438 33.608812 18 34.132812 18 L 39.5 18 C 40.327 18 41 18.673 41 19.5 L 41 35.5 C 41 36.327 40.327 37 39.5 37 L 10.5 37 C 9.673 37 9 36.327 9 35.5 L 9 19.5 C 9 18.673 9.673 18 10.5 18 L 15.867188 18 C 16.390187 18 16.885297 17.721484 17.154297 17.271484 L 18.988281 14.212891 C 19.438281 13.464891 20.259812 13 21.132812 13 z M 12 14 L 14 14 C 14.552 14 15 14.448 15 15 L 15 16 L 11 16 L 11 15 C 11 14.448 11.448 14 12 14 z M 34 19.5 A 1 1 0 0 0 34 21.5 A 1 1 0 0 0 34 19.5 z M 25 20 C 20.864 20 17.5 23.364 17.5 27.5 C 17.5 31.636 20.864 35 25 35 C 29.136 35 32.5 31.636 32.5 27.5 C 32.5 23.364 29.136 20 25 20 z M 25 22 C 28.032 22 30.5 24.468 30.5 27.5 C 30.5 30.532 28.032 33 25 33 C 21.968 33 19.5 30.532 19.5 27.5 C 19.5 24.468 21.968 22 25 22 z" fill="currentColor"/>
+                    </svg>
+                    📸 Capture Photo with Location
+                  </button>
+                </div>
+                <small>Supported formats: JPG, PNG, PDF (Max size: 2MB) | Camera automatically captures your location for routing to the correct local office</small>
+                
+                <!-- Camera Capture Interface -->
+                <div id="cameraInterface" class="camera-interface hidden">
+                  <div class="camera-preview">
+                    <video id="cameraVideo" autoplay playsinline muted></video>
+                    <div class="camera-controls">
+                      <button type="button" id="captureBtn" class="ai-action-btn" onclick="capturePhoto()">
+                        📸 Capture Photo
+                      </button>
+                      <button type="button" id="closeCameraBtn" class="ai-clear-btn" onclick="closeCamera()">
+                        ❌ Close Camera
+                      </button>
+                    </div>
+                    <div id="locationStatus" class="location-status">
+                      📍 Getting location...
+                    </div>
+                  </div>
+                  
+                  <!-- Location Map Display -->
+                  <div id="cameraLocationMap" class="camera-location-map hidden">
+                    <h4 style="margin: 10px 0; color: #2e7d32;">📍 Your Location</h4>
+                    <div id="cameraMapView" class="camera-map-view"></div>
+                    <div id="cameraLocationInfo" class="camera-location-info">
+                      <span id="cameraCoordinates">Getting coordinates...</span>
+                      <div class="location-accuracy">
+                        <span id="cameraAccuracy">Accuracy: calculating...</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Location Status Display -->
+                <div id="locationStatusDisplay" class="location-summary">
+                  <strong>Location Status:</strong> 
+                  <span id="currentLocationDisplay">Location will be captured when using camera</span>
+                  <span id="locationSourceDisplay" class="location-source camera">CAMERA</span>
+                  <div style="margin-top: 8px; font-size: 0.9em; color: #666;">
+                    <span id="locationAccuracyDisplay">Camera automatically captures your location to route your grievance to the correct local office</span>
+                  </div>
+                </div>
+
+                <!-- Photo Preview -->
+                <div id="photoPreview" class="photo-preview hidden">
+                  <img id="previewImage" src="" alt="Uploaded photo" />
+                  <div id="analysisStatus" class="analysis-status">
+                    <span id="analysisIcon">🔍</span> <span id="analysisText">Analyzing photo...</span>
+                  </div>
+                </div>
+                
+                <!-- AI Suggestions -->
+                <div id="aiSuggestions" class="ai-suggestions hidden">
+                  <h4>AI-Generated Petition Suggestions</h4>
+                  <div id="suggestedSubject" class="suggestion-field">
+                    <label>Suggested Subject:</label>
+                    <div class="suggestion-content"></div>
+                    <button type="button" class="use-suggestion-btn" onclick="useSuggestion('subject')">Use This Subject</button>
+                  </div>
+                  <div id="suggestedDescription" class="suggestion-field">
+                    <label>Suggested Description:</label>
+                    <div class="suggestion-content"></div>
+                    <button type="button" class="use-suggestion-btn" onclick="useSuggestion('description')">Use This Description</button>
+                  </div>
+                  <div class="suggestion-actions">
+                    <button type="button" class="use-all-btn" onclick="useAllSuggestions()">✅ Use All Suggestions</button>
+                    <button type="button" class="clear-suggestions-btn" onclick="clearSuggestions()">❌ Clear Suggestions</button>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="form-submit">
+                Submit Grievance
+              </button>
+            </form>
+
+            <a href="login.html" class="back-link">← Back to Login</a>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="container">
+          <p>
+            &copy; 2026 AI POWERED GRIEVANCE PROCESSING PORTAL. All rights
+            reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
