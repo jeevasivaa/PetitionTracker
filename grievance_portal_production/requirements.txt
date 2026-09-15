@@ -29,13 +29,12 @@ pytz==2023.3
 scikit-learn==1.3.2
 numpy==1.24.4
 
-# Protocol Buffers (required for mediapipe compatibility)
+# Protocol Buffers
 protobuf>=4.25.3,<5
 
 # AI and Image Processing
 openai==1.40.0
 Pillow==10.1.0
-opencv-python==4.8.1.78
 opencv-python-headless<4.11.0
 
 # Audio processing
@@ -44,22 +43,8 @@ pydub==0.25.1
 # Free AI Alternatives
 easyocr==1.7.0
 transformers==4.35.0
-torch==2.1.0
 SpeechRecognition==3.10.0
-# pyaudio==0.2.11  # Optional: Uncomment if you need microphone recording (requires Visual Studio Build Tools)
 huggingface-hub>=0.16.4,<0.17
 
 # SMS notifications
 twilio==8.10.0
-
-# Built-in Python modules (no installation needed)
-# - base64
-# - datetime
-# - timedelta 
-# - difflib
-# - os
-# - random
-# - string
-# - logging
-# - io
-# - tempfile
